@@ -15,3 +15,5 @@
 
 # Add development-specific files to ignore
 .idx/
+
+node_modules/
