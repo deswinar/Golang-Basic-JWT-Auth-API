@@ -33,23 +33,25 @@ func main() {
 	// Initialize the rate limiter (limit to 5 requests per minute)
 	rateLimiter := middleware.NewRateLimiter(5, 1*time.Minute)
 
+	api := router.Group("/api")
+
 	// Define routes for user, arena, and booking
-	router.POST("/register", handlers.RegisterUser)
-	router.POST("/login", rateLimiter.Limit(), handlers.LoginUser)                  // Apply rate limiting to login
-	router.POST("/refresh-token", rateLimiter.Limit(), handlers.RefreshAccessToken) // Apply rate limiting to refresh-token
-	router.POST("/logout", handlers.LogoutUser)
-	router.POST("/arena", handlers.CreateArena)
-	router.POST("/booking", handlers.CreateBooking)
+	api.POST("/register", handlers.RegisterUser)
+	api.POST("/login", rateLimiter.Limit(), handlers.LoginUser)                  // Apply rate limiting to login
+	api.POST("/refresh-token", rateLimiter.Limit(), handlers.RefreshAccessToken) // Apply rate limiting to refresh-token
+	api.POST("/logout", handlers.LogoutUser)
+	api.POST("/arena", handlers.CreateArena)
+	api.POST("/booking", handlers.CreateBooking)
 
 	// Add the test endpoint here
-	router.GET("/test", func(c *gin.Context) {
+	api.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "API is working!",
 		})
 	})
 
 	// Protected routes
-	protected := router.Group("/")
+	protected := api.Group("/")
 	protected.Use(middleware.AuthMiddleware()) // Use authentication middleware
 
 	// Route to fetch current user details

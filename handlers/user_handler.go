@@ -58,7 +58,6 @@ func RegisterUser(c *gin.Context) {
 }
 
 // LoginUser handles user login
-// LoginUser handles user login
 func LoginUser(c *gin.Context) {
 	var loginData struct {
 		Email    string `json:"email"`
